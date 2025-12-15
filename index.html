@@ -38,6 +38,7 @@ body {
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="//d3js.org/topojson.v1.min.js"></script>
 <script src="d3.geo.polyhedron.min.js"></script>
+<h1 style="text-align:center;font-family:monospace;">Visited Countries</h1>
 <script>
 
 var width = 960,
@@ -56,7 +57,9 @@ var graticule = d3.geo.graticule();
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .attr("display", "block")
+    .attr("style", "margin:auto")
 
 var defs = svg.append("defs");
 
@@ -122,3 +125,4 @@ d3.json("countries_with_visited.geojson", function(error, world) {
 d3.select(self.frameElement).style("height", height + "px");
 
 </script>
+</body>
