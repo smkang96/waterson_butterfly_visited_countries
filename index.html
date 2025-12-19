@@ -13,7 +13,7 @@ body {
 }
 
 .fill {
-  fill: #fff;
+  fill: #023;
 }
 
 .graticule {
@@ -24,7 +24,7 @@ body {
 }
 
 .land {
-  fill: #023;
+  fill: #fff;
 }
 
 .boundary {
@@ -35,25 +35,33 @@ body {
 
 </style>
 <body>
-<script src="//d3js.org/d3.v3.min.js"></script>
-<script src="//d3js.org/topojson.v1.min.js"></script>
-<script src="d3.geo.polyhedron.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo-voronoi@2"></script>
 <h1 style="text-align:center;font-family:monospace;">Visited Countries</h1>
 <script>
 
 var width = 960,
-    height = 550;
+    height = 960;
 
-var projection = d3.geo.polyhedron.waterman()
-    .rotate([-160, 0])
+var airports = [
+  { name: "ICN", coordinates: [126.4505, 37.4602] },
+  { name: "SIN", coordinates: [103.9915, 1.3644] },
+  { name: "PEK", coordinates: [116.5975, 40.0725] }
+];
+
+const projection = d3.geoGingery()
+    .rotate([-126, -37])
     .scale(118)
     .translate([width / 2, height / 2])
-    .precision(.1);
+    .precision(0.1);
 
-var path = d3.geo.path()
+const path = d3.geoPath()
     .projection(projection);
 
-var graticule = d3.geo.graticule();
+var graticule = d3.geoGraticule();
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
@@ -87,8 +95,7 @@ svg.append("path")
     .attr("clip-path", "url(#clip)")
     .attr("d", path);
 
-d3.json("countries_with_visited.geojson", function(error, world) {
-  if (error) throw error;
+d3.json("countries_with_visited.geojson").then(function(world) {
 
   // Draw land (all shapes merged)
   svg.insert("path", ".graticule")
@@ -120,6 +127,8 @@ d3.json("countries_with_visited.geojson", function(error, world) {
     .attr("stroke-opacity", 0.45)
     .attr("d", path);
 
+}).catch(function(error){
+    console.error("Error loading GeoJSON:", error);
 });
 
 d3.select(self.frameElement).style("height", height + "px");
